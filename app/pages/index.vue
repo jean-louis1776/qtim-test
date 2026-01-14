@@ -1,32 +1,52 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useBlogStore } from '~~/stores/blog'
+
 const route = useRoute()
 const router = useRouter()
-const { fetchPosts } = useBlog()
+const blogStore = useBlogStore()
+const { postsByPage, isLoadingPosts, postsError, totalPages } = storeToRefs(blogStore)
 
 const currentPage = computed(() => {
   const page = Number(route.query.page) || 1
   return page > 0 ? page : 1
 })
 
-// фронтовая пагинация: фиксированное количество страниц
-const totalPages = 5
-const pages = computed(() => Array.from({ length: totalPages }, (_, i) => i + 1))
+const posts = computed(() => postsByPage.value[currentPage.value] ?? [])
 
-const limit = 8
-const posts = ref<Awaited<ReturnType<typeof fetchPosts>>>([])
-const isLoading = ref(false)
-const error = ref<string | null>(null)
+const visiblePages = computed(() => {
+  const total = totalPages.value
+  const current = currentPage.value
+  const maxVisible = 5
+
+  if (total <= maxVisible) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+
+  // Логика для показа 5 страниц с текущей в центре (когда возможно)
+  let start = Math.max(1, current - 2)
+  let end = Math.min(total, start + maxVisible - 1)
+
+  // Корректируем start если end упирается в конец
+  if (end - start < maxVisible - 1) {
+    start = Math.max(1, end - maxVisible + 1)
+  }
+
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+})
+
+const isLoading = computed(() => isLoadingPosts.value)
+const error = computed(() => postsError.value)
 
 const loadPosts = async () => {
-  isLoading.value = true
-  error.value = null
   try {
-    posts.value = await fetchPosts(currentPage.value, limit)
+    await blogStore.fetchPosts(currentPage.value)
+
+    if (totalPages.value && currentPage.value > totalPages.value) {
+      router.replace({ query: { page: totalPages.value } })
+    }
   } catch (err) {
     console.error(err)
-    error.value = 'Ошибка при загрузке статей'
-  } finally {
-    isLoading.value = false
   }
 }
 
@@ -34,8 +54,14 @@ const goToPage = (page: number) => {
   router.push({ query: { page } })
 }
 
+const goToPrevPage = () => {
+  if (currentPage.value > 1) {
+    goToPage(currentPage.value - 1)
+  }
+}
+
 const goToNextPage = () => {
-  if (currentPage.value < totalPages) {
+  if (totalPages.value && currentPage.value < totalPages.value) {
     goToPage(currentPage.value + 1)
   }
 }
@@ -68,7 +94,7 @@ useHead({
         <p class="text-red-500 mb-4">{{ error }}</p>
         <button
           @click="loadPosts"
-          class="px-4 py-2 bg-ocean text-moon rounded hover:bg-opacity-90"
+          class="px-4 py-2 bg-ocean text-moon rounded hover:bg-opacity-90 cursor-pointer"
         >
           Try Again
         </button>
@@ -81,7 +107,7 @@ useHead({
       <div v-else>
         <div class="grid gap-8 grid-cols-4 mb-12.5">
           <article
-            v-for="(post, idx) in posts"
+            v-for="post in posts"
             :key="post.id"
             class="group cursor-pointer transition-transform duration-300 will-change-transform hover:-translate-y-1"
             @click="router.push(`/blog/${post.id}`)"
@@ -97,7 +123,7 @@ useHead({
             </div>
 
             <div class="mt-5">
-              <p class="text-sm text-stone mb-3 overflow-hidden [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3]">
+              <p class="text-sm text-abyss mb-3 overflow-hidden [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3]">
                 {{ post.preview }}
               </p>
 
@@ -110,13 +136,21 @@ useHead({
           </article>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div v-if="totalPages > 1" class="flex items-center gap-2">
           <button
-            v-for="page in pages"
+            @click="goToPrevPage"
+            :disabled="currentPage === 1 || isLoading"
+            class="h-11 w-11 rounded-xl border border-cloud flex items-center justify-center text-abyss hover:bg-stone/25 transition-colors disabled:hover:bg-transparent disabled:opacity-50 disabled:cursor-not-allowed rotate-180 cursor-pointer"
+          >
+            <CommonIcon name="arrow" class="h-2.5 w-1.25"/>
+          </button>
+
+          <button
+            v-for="page in visiblePages"
             :key="page"
             @click="goToPage(page)"
             :disabled="isLoading"
-            class="h-11 w-11 rounded-xl text-xs font-medium transition-colors flex items-center justify-center"
+            class="h-11 w-11 rounded-xl text-xs font-medium transition-colors flex items-center justify-center cursor-pointer"
             :class="[
               currentPage === page
                 ? 'bg-abyss text-moon'
@@ -129,8 +163,8 @@ useHead({
 
           <button
             @click="goToNextPage"
-            :disabled="currentPage === pages.length || isLoading"
-            class="h-11 w-11 rounded-xl border border-cloud flex items-center justify-center text-abyss hover:bg-stone/25 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            :disabled="currentPage >= totalPages || isLoading"
+            class="h-11 w-11 rounded-xl border border-cloud flex items-center justify-center text-abyss hover:bg-stone/25 transition-colors disabled:hover:bg-transparent disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <CommonIcon name="arrow" class="h-2.5 w-1.25"/>
           </button>

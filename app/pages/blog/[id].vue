@@ -1,25 +1,23 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useBlogStore } from '~~/stores/blog'
+
 const route = useRoute()
-const router = useRouter()
-const { fetchPostById } = useBlog()
+const blogStore = useBlogStore()
+const { postDetails, isLoadingPost, postError } = storeToRefs(blogStore)
 
 const postId = computed(() => route.params.id as string)
-const post = ref<Awaited<ReturnType<typeof fetchPostById>> | null>(null)
-const isLoading = ref(false)
-const error = ref<string | null>(null)
+const post = computed(() => postDetails.value[postId.value] ?? null)
+const isLoading = computed(() => isLoadingPost.value)
+const error = computed(() => postError.value)
 
 const loadPost = async () => {
   if (!postId.value) return
 
-  isLoading.value = true
-  error.value = null
   try {
-    post.value = await fetchPostById(postId.value)
+    await blogStore.fetchPostById(postId.value)
   } catch (err) {
-    error.value = 'Ошибка при загрузке статьи'
     console.error(err)
-  } finally {
-    isLoading.value = false
   }
 }
 
@@ -46,7 +44,7 @@ useHead({
       <p class="text-red-500 mb-4">{{ error }}</p>
       <button
         @click="loadPost"
-        class="px-4 py-2 bg-ocean text-moon rounded hover:bg-opacity-90"
+        class="px-4 py-2 bg-ocean text-moon rounded hover:bg-opacity-90 cursor-pointer"
       >
         Try again
       </button>

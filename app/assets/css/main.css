@@ -12,10 +12,6 @@
   font-family: "TT Commons", sans-serif;
 }
 
-button {
-  cursor: pointer;
-}
-
 @theme {
   /* Нейтральные */
   --color-moon: #ffffff; /* основной светлый фон */

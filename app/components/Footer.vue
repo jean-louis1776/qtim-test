@@ -29,7 +29,7 @@
               <p>139 Ruben Station Lake<br />Drew, NM 52678</p>
               <button
                 type="button"
-                class="mt-1 w-8 h-8 rounded-full bg-abyss flex items-center justify-center text-lavender"
+                class="mt-1 w-8 h-8 rounded-full bg-abyss flex items-center justify-center text-lavender cursor-pointer"
                 aria-label="Open map Russia"
               >
                 <CommonIcon name="location-icon" class="w-3 h-3" />
@@ -41,7 +41,7 @@
               <p>139 Ruben Station Lake<br />Drew, NM 52678</p>
               <button
                 type="button"
-                class="mt-1 w-8 h-8 rounded-full bg-abyss flex items-center justify-center text-lavender"
+                class="mt-1 w-8 h-8 rounded-full bg-abyss flex items-center justify-center text-lavender cursor-pointer"
                 aria-label="Open map Dubai"
               >
                 <CommonIcon name="location-icon" class="w-3 h-3" />
@@ -53,7 +53,7 @@
 
       <button
         type="button"
-        class="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-[54%] w-89.5 h-44.75 rounded-t-[200px] bg-abyss text-moon flex items-center justify-center text-[32px] font-normal pt-30.5 pb-6.25 px-40"
+        class="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-[54%] w-89.5 h-44.75 cursor-pointer rounded-t-[200px] bg-abyss text-moon flex items-center justify-center text-[32px] font-normal pt-30.5 pb-6.25 px-40"
       >
         Go
       </button>
@@ -61,14 +61,14 @@
 
     <div class="mx-auto max-w-360 px-28 pb-8 pt-10 text-base text-abyss flex flex-row items-center justify-between">
       <div class="flex flex-wrap gap-8">
-        <button class="underline underline-offset-4 decoration-charcoal/40">Facebook</button>
-        <button class="underline underline-offset-4 decoration-charcoal/40">Instagram</button>
-        <button class="underline underline-offset-4 decoration-charcoal/40">Telegram</button>
+        <button class="underline underline-offset-4 decoration-charcoal/40 cursor-pointer">Facebook</button>
+        <button class="underline underline-offset-4 decoration-charcoal/40 cursor-pointer">Instagram</button>
+        <button class="underline underline-offset-4 decoration-charcoal/40 cursor-pointer">Telegram</button>
       </div>
       <div class="flex flex-wrap gap-8 justify-end">
-        <button class="underline underline-offset-4 decoration-charcoal/40">Behance</button>
-        <button class="underline underline-offset-4 decoration-charcoal/40">LinkedIn</button>
-        <button class="underline underline-offset-4 decoration-charcoal/40">Privacy Policy</button>
+        <button class="underline underline-offset-4 decoration-charcoal/40 cursor-pointer">Behance</button>
+        <button class="underline underline-offset-4 decoration-charcoal/40 cursor-pointer">LinkedIn</button>
+        <button class="underline underline-offset-4 decoration-charcoal/40 cursor-pointer">Privacy Policy</button>
       </div>
     </div>
   </footer>

@@ -19,7 +19,7 @@ const router = useRouter()
           <div class="lang-start-section flex items-center gap-4">
             <button
                 type="button"
-                class="w-13 h-13 rounded-full border border-cloud flex items-center justify-center hover:bg-lavender transition-colors"
+                class="w-13 h-13 rounded-full border border-cloud flex items-center justify-center hover:bg-lavender transition-colors cursor-pointer"
                 aria-label="Language"
             >
               <CommonIcon name="lang-icon" class="w-6 h-6" />
@@ -27,7 +27,7 @@ const router = useRouter()
 
             <button
                 type="button"
-                class="h-13 w-35.5 px-5 rounded-full bg-abyss hover:bg-lavender transition-colors"
+                class="h-13 w-35.5 px-5 rounded-full bg-abyss hover:bg-lavender transition-colors cursor-pointer"
             >
               <span class="text-moon text-[20px] font-medium">Let's work</span>
             </button>
