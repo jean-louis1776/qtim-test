@@ -1,10 +1,10 @@
 <template>
   <div class="app min-h-screen flex flex-col">
-    <CommonHeader />
+    <Header/>
     <main class="flex-1">
       <NuxtPage/>
     </main>
-    <CommonFooter />
+    <Footer />
   </div>
 </template>
 

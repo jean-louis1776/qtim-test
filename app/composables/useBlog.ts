@@ -1,8 +1,10 @@
 export interface BlogPost {
   id: string
   title: string
-  body: string
   createdAt: string
+  image?: string
+  preview?: string
+  description?: string
   [key: string]: unknown
 }
 
