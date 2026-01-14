@@ -25,7 +25,7 @@ const visiblePages = computed(() => {
 
   // Логика для показа 5 страниц с текущей в центре (когда возможно)
   let start = Math.max(1, current - 2)
-  let end = Math.min(total, start + maxVisible - 1)
+  const end = Math.min(total, start + maxVisible - 1)
 
   // Корректируем start если end упирается в конец
   if (end - start < maxVisible - 1) {
